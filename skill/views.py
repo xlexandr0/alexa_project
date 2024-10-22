@@ -1,40 +1,72 @@
-from django.shortcuts import render
+# alexa_app/views.py
 from django.http import JsonResponse
-from django.views.decorators.csrf import csrf_exempt
 import json
-from .models import Producto
 
-@csrf_exempt
-def alexa_endpoint(request):
-    if request.method == "POST":
+def alexa_webhook(request):
+    if request.method == 'POST':
         data = json.loads(request.body)
-        intent = data['request']['intent']['name']
+        intent_name = data['request']['intent']['name']
+        
+        if intent_name == 'CreateItemIntent':
+            item = data['request']['intent']['slots']['item']['value']
+            # Lógica para crear un nuevo objeto
+            return JsonResponse({
+                "version": "1.0",
+                "response": {
+                    "outputSpeech": {
+                        "type": "PlainText",
+                        "text": f"{item} fue creado exitosamente."
+                    }
+                }
+            })
 
-        if intent == "AgregarProductoIntent":
-            producto = data['request']['intent']['slots']['producto']['value']
-            agregar_producto(producto)
-            return JsonResponse({"response": f"{producto} agregado"})
+        elif intent_name == 'ReadItemIntent':
+            item = data['request']['intent']['slots']['item']['value']
+            # Lógica para obtener información de un objeto
+            return JsonResponse({
+                "version": "1.0",
+                "response": {
+                    "outputSpeech": {
+                        "type": "PlainText",
+                        "text": f"Detalles de {item}: ..."  # Aquí añade detalles del objeto.
+                    }
+                }
+            })
 
-        elif intent == "EliminarProductoIntent":
-            producto = data['request']['intent']['slots']['producto']['value']
-            eliminar_producto(producto)
-            return JsonResponse({"response": f"{producto} eliminado"})
+        elif intent_name == 'UpdateItemIntent':
+            item = data['request']['intent']['slots']['item']['value']
+            new_value = data['request']['intent']['slots']['new_value']['value']
+            # Lógica para actualizar el objeto
+            return JsonResponse({
+                "version": "1.0",
+                "response": {
+                    "outputSpeech": {
+                        "type": "PlainText",
+                        "text": f"{item} fue actualizado a {new_value}."
+                    }
+                }
+            })
 
-    return JsonResponse({"response": "Intent no reconocido"})
+        elif intent_name == 'DeleteItemIntent':
+            item = data['request']['intent']['slots']['item']['value']
+            # Lógica para eliminar el objeto
+            return JsonResponse({
+                "version": "1.0",
+                "response": {
+                    "outputSpeech": {
+                        "type": "PlainText",
+                        "text": f"{item} fue eliminado exitosamente."
+                    }
+                }
+            })
 
-def agregar_producto(producto_nombre):
-    producto, created = Producto.objects.get_or_create(nombre=producto_nombre)
-    if not created:
-        producto.cantidad += 1
-    producto.save()
-
-def eliminar_producto(producto_nombre):
-    try:
-        producto = Producto.objects.get(nombre=producto_nombre)
-        if producto.cantidad > 1:
-            producto.cantidad -= 1
         else:
-            producto.delete()
-    except Producto.DoesNotExist:
-        pass
-
+            return JsonResponse({
+                "version": "1.0",
+                "response": {
+                    "outputSpeech": {
+                        "type": "PlainText",
+                        "text": "Intento no reconocido."
+                    }
+                }
+            })
