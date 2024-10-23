@@ -25,7 +25,7 @@ SECRET_KEY = 'django-insecure-+l)%u4z&3lf)li87(s^l8&zlr*&1ku_uwnt!#e+cwa)(x&4&c9
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = []
+ALLOWED_HOSTS = ['alexaproject-production.up.railway.app', 'localhost', '127.0.0.1']
 
 
 # Application definition
