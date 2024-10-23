@@ -1,0 +1,18 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Items añadidos por Alexa</title>
+</head>
+<body>
+    <h1>Items Añadidos por Alexa</h1>
+    <ul>
+        {% for item in items %}
+            <li>{{ item.name }} - {{ item.descripcion }}</li>
+        {% empty %}
+            <li>No hay elementos aún.</li>
+        {% endfor %}
+    </ul>
+</body>
+</html>

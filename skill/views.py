@@ -1,6 +1,14 @@
 # alexa_app/views.py
 from django.http import JsonResponse
+from django.shortcuts import render
+from .models import Item
 import json
+
+def mostrar_items(request):
+    # Obtener todos los elementos de la base de datos
+    items = Item.objects.all()
+    # Renderizar los datos a la plantilla
+    return render(request, 'mostrar_items.html', {'items': items})
 
 def alexa_webhook(request):
     if request.method == 'POST':
