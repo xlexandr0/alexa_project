@@ -8,7 +8,7 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 # Configuración de seguridad
 SECRET_KEY = os.getenv('DJANGO_SECRET_KEY', 'tu-secreto-de-django')
 
-DEBUG = os.getenv('DJANGO_DEBUG', 'False') == 'True'
+DEBUG = False
 
 # Configura ALLOWED_HOSTS con el dominio de Railway
 ALLOWED_HOSTS = ['tu-app.up.railway.app', '127.0.0.1', 'localhost']
@@ -60,7 +60,10 @@ WSGI_APPLICATION = 'alexa_project.wsgi.application'  # Cambia 'alexa_project' si
 
 # Configuración de base de datos
 DATABASES = {
-    'default': dj_database_url.config(default=f'sqlite:///{BASE_DIR}/db.sqlite3')
+    'default': {
+        'ENGINE': 'django.db.backends.sqlite3',
+        'NAME': os.path.join(BASE_DIR, 'db.sqlite3'),
+    }
 }
 
 # Configuración de contraseñas
